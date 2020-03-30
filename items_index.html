@@ -22,7 +22,7 @@
 
         <div>
         <h3>新規</h3>
-            <input type="text" placeholder="日付" v-model="measuredAt">
+            <input type="datetime-local" placeholder="日付" v-model="measuredAt">
             <input type="text" placeholder="測定値" v-model="measuredValue">
             <button v-on:click="addBasalBodyTemperature">追加</button>
         </div>
@@ -32,7 +32,9 @@
             <button v-on:click="fetchApi">fetchApi</button>
             <ul>
                 <li v-for="b in basalBodyTemperatures">
-                    {{ b }}
+                    <span>{{ select_date(new Date(b.measured_at)) }}</span>
+                    <span>{{ b.measured_value }}</span>
+                    <button v-on:click="deleteBasalBodyTemperature(b)" >削除</button>
                 </li>
             </ul>
         </div>

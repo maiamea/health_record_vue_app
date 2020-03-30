@@ -1,9 +1,9 @@
-function formatDate(measured_at){
+function formatDate(measured_at) {
     var date = new Date(measured_at)
     var year = date.getFullYear();
-    var month = date.getMonth()+1;
+    var month = date.getMonth() + 1;
     var day = date.getDate();
-    return year + '/'+ month +'/'+ day
+    return year + '/' + month + '/' + day
 }
 
 var app = new Vue({
@@ -22,6 +22,7 @@ var app = new Vue({
             // ["2020-03-09 ", 37.0],
             // ["2020-03-10 ", 37.1]
         ],
+        id: "",
         measuredAt: "",
         measuredValue: ""
     },
@@ -29,8 +30,20 @@ var app = new Vue({
         await this.fetchApi()
         this.drawGraph()
     },
-    methods: {
 
+    methods: {
+        async deleteBasalBodyTemperature(target) {
+            var result = confirm(`${this.select_date(new Date(target.measured_at))}のデータを消してもいいですか？`)
+            if (result) {
+                await fetch(`http://localhost:3000/api/basal_body_temperatures/${target.id}`, {
+                    method: "DELETE",
+                    mode: 'cors'
+                })
+                await this.fetchApi()
+                this.drawGraph()
+            }
+
+        },
 
         async fetchApi() {
             // basal_body_temperaturesの一覧取得WebAPIにリクエストを送る
@@ -40,7 +53,7 @@ var app = new Vue({
             var json = await response.json()
             console.log(json)
             // 解析したjsonデータをもとにvueインスタンスのdataのbasalBodyTemperaturesを書き換える
-            this.basalBodyTemperatures = json.data.map(b => [formatDate(b.measured_at),b.measured_value])
+            this.basalBodyTemperatures = json.data
         },
         select_date(date) {
             var year = date.getFullYear();
@@ -48,8 +61,8 @@ var app = new Vue({
             var date = date.getDate();
             return year + '年' + month + '月' + date + '日'
         },
-        addBasalBodyTemperature() {
-            fetch('http://localhost:3000/api/basal_body_temperatures', {
+        async addBasalBodyTemperature() {
+            await fetch('http://localhost:3000/api/basal_body_temperatures', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8",
@@ -60,7 +73,7 @@ var app = new Vue({
                 })
             })
             console.log('addBasalBodyTemperature', this.measuredAt, this.measuredValue)
-            this.basalBodyTemperatures.push([this.measuredAt, Number(this.measuredValue)])
+            await this.fetchApi()
             this.drawGraph()
         },
         drawGraph() {
@@ -82,14 +95,13 @@ var app = new Vue({
                 //     ['4 木', 37.0],
                 //     ['5 金', 37.1]
                 // ]);
-                data.addRows(
-                    this.basalBodyTemperatures
-                )
+                var rows = this.basalBodyTemperatures.map(b => [formatDate(b.measured_at), b.measured_value])
+                data.addRows(rows)
 
                 // Set chart options
                 var options = {
                     'title': '基礎体温(℃)',
-                    'width': 500,
+                    'width': 800,
                     'height': 300
                 };
 
