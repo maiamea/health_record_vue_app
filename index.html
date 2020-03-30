@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthRecord</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="app_title">
+            <a href="items_index.html">
+                <h1>体調記録アプリ</h1>
+            </a>
+            <p>ー 記録の継続を目指して ー</p>
+        </div>
+    </header>
+    <div id="app">
+        <h2>{{h2}}</h2>
+            <h2>一覧表示</h2>
+            <ul>
+                <li v-for="b in basalBodyTemperatures">
+                    {{ b }}
+                </li>
+            </ul>
+        
+    </div>
+
+    <script src="basal_body_temperature_index.js"></script>
+</body>
+
+</html>

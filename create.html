@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthRecord</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <header>
+        <div class="app_title">
+            <a href="items_index.html">
+                <h1>体調記録アプリ</h1>
+            </a>
+            <p>ー 記録の継続を目指して ー</p>
+        </div>
+    </header>
+    <div id="app">
+        <h2>{{h2}}</h>
+        <div>
+            <input type="text" placeholder="日付" v-model="measuredAt">
+            <input type="text" placeholder="測定値" v-model="measuredValue">
+            <button v-on:click="addBasalBodyTemperature">追加</button>
+        </div>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                h2: '基礎体温(℃)'
+            }
+        }) 
+    </script>
+    
+    <script src="basal_body_temperature.js"></script>
+</body>
+</html>
