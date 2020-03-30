@@ -1,7 +1,7 @@
 function formatDate(measured_at){
     var date = new Date(measured_at)
     var year = date.getFullYear();
-    var month = date.getMonth();
+    var month = date.getMonth()+1;
     var day = date.getDate();
     return year + '/'+ month +'/'+ day
 }
@@ -11,24 +11,27 @@ var app = new Vue({
     data: {
         h2: '基礎体温(℃)',
         basalBodyTemperatures: [
-            ["2020-03-01", 36.7],
-            ["2020-03-02", 36.0],
-            ["2020-03-03 ", 36.9],
-            ["2020-03-04 ", 37.0],
-            ["2020-03-05 ", 37.1],
-            ["2020-03-06 ", 36.7],
-            ["2020-03-07 ", 36.0],
-            ["2020-03-08 ", 36.9],
-            ["2020-03-09 ", 37.0],
-            ["2020-03-10 ", 37.1]
+            // ["2020-03-01", 36.7],
+            // ["2020-03-02", 36.0],
+            // ["2020-03-03 ", 36.9],
+            // ["2020-03-04 ", 37.0],
+            // ["2020-03-05 ", 37.1],
+            // ["2020-03-06 ", 36.7],
+            // ["2020-03-07 ", 36.0],
+            // ["2020-03-08 ", 36.9],
+            // ["2020-03-09 ", 37.0],
+            // ["2020-03-10 ", 37.1]
         ],
         measuredAt: "",
         measuredValue: ""
     },
-    created() {
+    async created() {
+        await this.fetchApi()
         this.drawGraph()
     },
     methods: {
+
+
         async fetchApi() {
             // basal_body_temperaturesの一覧取得WebAPIにリクエストを送る
             var response = await fetch('http://localhost:3000/api/basal_body_temperatures')
@@ -46,6 +49,16 @@ var app = new Vue({
             return year + '年' + month + '月' + date + '日'
         },
         addBasalBodyTemperature() {
+            fetch('http://localhost:3000/api/basal_body_temperatures', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                },
+                body: JSON.stringify({
+                    measured_value: this.measuredValue,
+                    measured_at: this.measuredAt
+                })
+            })
             console.log('addBasalBodyTemperature', this.measuredAt, this.measuredValue)
             this.basalBodyTemperatures.push([this.measuredAt, Number(this.measuredValue)])
             this.drawGraph()
