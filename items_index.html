@@ -12,26 +12,23 @@
 <body>
     <header>
         <div class="app_title">
-            <a href="items_index.html">
                 <h1>体調記録アプリ</h1>
-            </a>
             <p>ー 記録の継続を目指して ー</p>
         </div>
     </header>
     <div id="app">
-        <h2>{{h2}}</h2>
+        <span>{{ select_date(new Date()) }}</span>
+        <h2>基礎体温(℃)</h2>
+
         <div>
-            <a href="create.html">新規</a>
-            <a href="index.html">一覧</a>
-            <a href="graph.html">グラフ</a>
+        <h3>新規</h3>
             <input type="text" placeholder="日付" v-model="measuredAt">
             <input type="text" placeholder="測定値" v-model="measuredValue">
             <button v-on:click="addBasalBodyTemperature">追加</button>
         </div>
-        <button v-on:click="showList">リストモード</button>
-        <button v-on:click="showGraph">グラフモード</button>
-        <div v-if="mode === 'list'">
-            <h2>一覧表示</h2>
+
+        <div>
+            <h3>一覧表示</h3>
             <ul>
                 <li v-for="b in basalBodyTemperatures">
                     {{ b }}
@@ -39,15 +36,16 @@
             </ul>
         </div>
 
-        <div v-if="mode === 'graph'">
-            <h2>グラフ表示</h2>
+        <div>
+            <h3>グラフ</h3>
             <button v-on:click="drawGraph">drawGraph</button>
             <div id="chart_div"></div>
         </div>
 
-
     </div>
-    <script src="basal_body_temperature.js"></script>
+    <script src="basal_body_temperature_items_index.js"></script>
+    
+
 </body>
 
 </html>
