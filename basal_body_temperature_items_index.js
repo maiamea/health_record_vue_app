@@ -1,3 +1,11 @@
+function formatDate(measured_at){
+    var date = new Date(measured_at)
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var day = date.getDate();
+    return year + '/'+ month +'/'+ day
+}
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -14,20 +22,30 @@ var app = new Vue({
             ["2020-03-09 ", 37.0],
             ["2020-03-10 ", 37.1]
         ],
-        measuredAt: "", 
+        measuredAt: "",
         measuredValue: ""
     },
     created() {
         this.drawGraph()
     },
     methods: {
+        async fetchApi() {
+            // basal_body_temperaturesの一覧取得WebAPIにリクエストを送る
+            var response = await fetch('http://localhost:3000/api/basal_body_temperatures')
+            console.log(response)
+            // responseをjsonとして解析する
+            var json = await response.json()
+            console.log(json)
+            // 解析したjsonデータをもとにvueインスタンスのdataのbasalBodyTemperaturesを書き換える
+            this.basalBodyTemperatures = json.data.map(b => [formatDate(b.measured_at),b.measured_value])
+        },
         select_date(date) {
             var year = date.getFullYear();
-            var month = date.getMonth()+1;
+            var month = date.getMonth() + 1;
             var date = date.getDate();
             return year + '年' + month + '月' + date + '日'
         },
-        addBasalBodyTemperature(){
+        addBasalBodyTemperature() {
             console.log('addBasalBodyTemperature', this.measuredAt, this.measuredValue)
             this.basalBodyTemperatures.push([this.measuredAt, Number(this.measuredValue)])
             this.drawGraph()
@@ -43,7 +61,7 @@ var app = new Vue({
                 // Create the data table.
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
+                data.addColumn('number', '測定値');
                 // data.addRows([
                 //     ['1 月', 36.7],
                 //     ['2 火', 36.0],
@@ -57,8 +75,8 @@ var app = new Vue({
 
                 // Set chart options
                 var options = {
-                    'title': 'How Much Pizza I Ate Last Night',
-                    'width': 400,
+                    'title': '基礎体温(℃)',
+                    'width': 500,
                     'height': 300
                 };
 

@@ -29,6 +29,7 @@
 
         <div>
             <h3>一覧表示</h3>
+            <button v-on:click="fetchApi">fetchApi</button>
             <ul>
                 <li v-for="b in basalBodyTemperatures">
                     {{ b }}
